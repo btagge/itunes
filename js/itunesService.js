@@ -7,12 +7,17 @@ angular.module('itunes').service('itunesService', function($http, $q){
   //Note that in the above line, artist is the parameter being passed in. 
   //You can return the http request or you can make your own promise in order to manipulate the data before you resolve it.
 
-    //Code here
+    this.lookUpArtist = function(artist) {
+      var defer = $q.defer();
+
+      $http.jsonp('https://itunes.apple.com/search?term=' + artist + '&callback=JSON_CALLBACK')
+        .then(function(response) {
+          console.log(99999, response);
+          defer.resolve(response.data.results);
+        });
+      return defer.promise;
+    }
     
-
-
-
-
     // Go to the next step in the README (Tie in your controller). You will come back to these instructions shortly.
     // 
     // You need to sort the data you get back from the itunes API to be an object in the following format.
@@ -27,6 +32,22 @@ angular.module('itunes').service('itunesService', function($http, $q){
   */
   //the iTunes API is going to give you a lot more details than ng-grid wants. Create a new array and then loop through the iTunes data pushing into your new array objects that look like the above data. Make sure your method returns this finalized array of data. 
   // When this is complete, head back to your controller.
+
+    this.normalizeResponse = function(response) {
+        console.log(22222, response);
+
+      return response.map(function(el) {
+        return {
+          AlbumArt: el.artworkUrl60,
+          Artist: el.artistName,
+          Song: el.trackName,
+          Collection: el.collectionName,
+          CollectionPrice: "$" + el.collectionPrice,
+          Play: el.trackViewUrl,
+          Type: el.type
+        }
+      });
+    }  
 
 
 });

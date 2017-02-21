@@ -24,8 +24,17 @@ angular.module('itunes').controller('mainCtrl', function($scope, itunesService){
   //Now write a function that will call the method on the itunesService that is responsible for getting the data from iTunes, whenever the user clicks the submit button
   //*remember, that method should be expecting an artist name. The artist name is coming from the input box on index.html, head over there and check if that input box is tied to any specific model we could use.
   //Also note that that method should be retuning a promise, so you could use .then in this function. 
-    
-    //Code here
+   
+    $scope.songData = [];
+
+    $scope.getSongData = function(artist) {
+      $scope.lookUpArtist = itunesService.lookUpArtist(artist)
+        .then(function(response) {
+          console.log(11111, response);
+          $scope.songData = itunesService.normalizeResponse(response);
+          console.log(44444, $scope.songData);
+        });
+    }
   
 
 
